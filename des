@@ -1,0 +1,64 @@
+/*Start
+
+Input plaintext
+
+Input key
+
+Apply Initial Permutation
+
+Split plaintext into left and right halves
+
+For 16 rounds
+
+Expand right half
+
+XOR with round key
+
+Apply S-box substitution
+
+Apply P-box permutation
+
+XOR with left half
+
+Swap
+
+Apply Final Permutation
+
+Output ciphertext
+
+Stop*/
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
+import java.util.Base64;
+
+class DESDemo {
+    public static void main(String[] args) throws Exception {
+
+        // Plaintext and key
+        String plain = "HELLO1234567890";
+        String key   = "12345678";   // DES key must be 8 bytes (64 bits, 56 used)
+
+        // Create DES key
+        SecretKeySpec ks = new SecretKeySpec(key.getBytes(), "DES");
+
+        // Create Cipher for DES with mode + padding
+        Cipher c = Cipher.getInstance("DES/ECB/PKCS5Padding");
+
+        // Encrypt
+        c.init(Cipher.ENCRYPT_MODE, ks);
+        byte[] enc = c.doFinal(plain.getBytes());
+
+        // Decrypt
+        c.init(Cipher.DECRYPT_MODE, ks);
+        byte[] dec = c.doFinal(enc);
+
+        // Convert encrypted bytes to Base64 for readable output
+        String encBase64 = Base64.getEncoder().encodeToString(enc);
+
+        System.out.println("Plain text      : " + plain);
+        System.out.println("Key             : " + key);
+        System.out.println("Algorithm       : DES/ECB/PKCS5Padding");
+        System.out.println("Encrypted (B64) : " + encBase64);
+        System.out.println("Decrypted text  : " + new String(dec));
+    }
+}
