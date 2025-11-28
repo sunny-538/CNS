@@ -1,0 +1,38 @@
+Start
+
+Input text
+
+Break message into 512-bit blocks
+
+Add padding bits
+
+Initialize 4 buffers (A,B,C,D)
+
+For each block
+
+Perform 64 operations in 4 rounds
+
+Combine buffers to form 128-bit hash
+
+Output hash
+
+Stop
+
+
+
+ import java.security.MessageDigest;
+public class MD5 {
+   
+
+
+    public static void main(String[] args) throws Exception
+    {
+        String input = "Hello World";
+        MessageDigest md = MessageDigest.getInstance("MD5");
+        byte[] d = md.digest(input.getBytes());
+
+        StringBuilder sb = new StringBuilder();
+        for(byte b : d) sb.append(String.format("%02x",b));
+        System.out.println(sb);
+    }
+}
