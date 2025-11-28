@@ -1,0 +1,106 @@
+
+/*Start
+
+Choose a large prime number p (public).
+
+Choose a primitive root g of p (public).
+
+User A selects a private key a (secret).
+
+User B selects a private key b (secret).
+
+A computes public key: A = g^a mod p.
+
+B computes public key: B = g^b mod p.
+
+A sends A to B, B sends B to A (publicly).
+
+A computes shared key: K₁ = B^a mod p.
+
+B computes shared key: K₂ = A^b mod p.
+
+Now K₁ = K₂, this is the common secret key.
+Stop.*/
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Diffie-Hellman with User Input (BigInt)</title>
+</head>
+<body>
+
+<h2>Diffie-Hellman Key Exchange (BigInt + User Input)</h2>
+
+<label>Prime Number (p): </label>
+<input id="p" type="text" placeholder="Enter prime p"><br><br>
+
+<label>Base (g): </label>
+<input id="g" type="text" placeholder="Enter base g"><br><br>
+
+<label>Alice Private Key (a): </label>
+<input id="a" type="text" placeholder="Enter a"><br><br>
+
+<label>Bob Private Key (b): </label>
+<input id="b" type="text" placeholder="Enter b"><br><br>
+
+<button onclick="runDH()">Generate Key</button>
+
+<pre id="output"></pre>
+
+<script>
+// -------------------------------------------------------
+// SUPER EASY powmod(): loop-based, beginner-friendly
+// -------------------------------------------------------
+function powmod(base, exp, mod) {
+    base = base % mod;
+    let result = 1n;
+
+    for (let i = 0n; i < exp; i++) {
+        result = (result * base) % mod;
+    }
+
+    return result;
+}
+
+// -------------------------------------------------------
+// Main Diffie–Hellman function
+// -------------------------------------------------------
+function runDH() {
+    const p = BigInt(document.getElementById("p").value);
+    const g = BigInt(document.getElementById("g").value);
+    const a = BigInt(document.getElementById("a").value);
+    const b = BigInt(document.getElementById("b").value);
+
+    let out = "";
+
+    out += "Public Prime (p): " + p + "\n";
+    out += "Public Base (g): " + g + "\n\n";
+
+    out += "Alice Private Key (a): " + a + "\n";
+    out += "Bob Private Key (b): " + b + "\n\n";
+
+    // Public keys
+    const A = powmod(g, a, p);
+    const B = powmod(g, b, p);
+
+    out += "Alice Public Key (A = g^a mod p): " + A + "\n";
+    out += "Bob Public Key (B = g^b mod p): " + B + "\n\n";
+
+    // Shared secret computed by both sides
+    const secretAlice = powmod(B, a, p);
+    const secretBob   = powmod(A, b, p);
+
+    out += "Shared Secret (Alice computes): " + secretAlice + "\n";
+    out += "Shared Secret (Bob computes): " + secretBob + "\n\n";
+
+    if (secretAlice === secretBob) {
+        out += "✔ Shared Key Successfully Established!";
+    } else {
+        out += "✘ ERROR: Shared Keys Do Not Match!";
+    }
+
+    document.getElementById("output").innerText = out;
+}
+</script>
+
+</body>
+</html>
