@@ -1,0 +1,49 @@
+Start
+
+Input plaintext and key
+
+Initialize S-array with values 0–255
+
+Perform Key Scheduling Algorithm (KSA)
+
+Generate keystream bytes (PRGA)
+
+XOR keystream with plaintext
+
+Output ciphertext
+
+Stop
+
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
+import java.util.Base64;
+
+class RC4CipherDemo {
+    public static void main(String[] args) throws Exception {
+
+        String plain = "HELLO1234567890";
+        String key   = "MYRC4KEY";   // RC4 key (length can vary)
+
+        // Create RC4 key
+        SecretKeySpec ks = new SecretKeySpec(key.getBytes(), "RC4");
+
+        // Some JDKs use "RC4", some use "ARCFOUR"
+        Cipher c = Cipher.getInstance("RC4"); // or "ARCFOUR" if RC4 gives error
+
+        // Encrypt
+        c.init(Cipher.ENCRYPT_MODE, ks);
+        byte[] enc = c.doFinal(plain.getBytes());
+
+        // Decrypt
+        c.init(Cipher.DECRYPT_MODE, ks);
+        byte[] dec = c.doFinal(enc);
+
+        String encBase64 = Base64.getEncoder().encodeToString(enc);
+
+        System.out.println("Plain text      : " + plain);
+        System.out.println("Key             : " + key);
+        System.out.println("Algorithm       : RC4");
+        System.out.println("Encrypted (B64) : " + encBase64);
+        System.out.println("Decrypted text  : " + new String(dec));
+    }
+}
