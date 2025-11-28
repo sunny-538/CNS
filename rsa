@@ -1,0 +1,64 @@
+Start
+
+Choose two prime numbers p and q
+
+Compute n = p × q
+
+Compute φ(n) = (p−1)(q−1)
+
+Choose e (public key)
+
+Compute d (private key)
+
+For encryption:
+
+C = (P^e mod n)
+
+For decryption:
+
+P = (C^d mod n)
+
+Stop
+
+
+
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import javax.crypto.Cipher;
+import java.util.Base64;
+
+class RSADemo {
+    public static void main(String[] args) throws Exception {
+
+        // 1. Generate RSA key pair (public + private)
+        KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
+        keyGen.initialize(2048); // key size in bits
+        KeyPair pair = keyGen.generateKeyPair();
+
+        PublicKey publicKey = pair.getPublic();
+        PrivateKey privateKey = pair.getPrivate();
+
+        // 2. Plain text
+        String plain = "HELLO RSA TEST";
+
+        // 3. Create Cipher for RSA
+        Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+
+        // 4. Encrypt using PUBLIC key
+        cipher.init(Cipher.ENCRYPT_MODE, publicKey);
+        byte[] enc = cipher.doFinal(plain.getBytes());
+        String encBase64 = Base64.getEncoder().encodeToString(enc);
+
+        // 5. Decrypt using PRIVATE key
+        cipher.init(Cipher.DECRYPT_MODE, privateKey);
+        byte[] dec = cipher.doFinal(enc);
+        String decText = new String(dec);
+
+        System.out.println("Plain text       : " + plain);
+        System.out.println("Algorithm        : RSA/ECB/PKCS1Padding");
+        System.out.println("Encrypted (B64)  : " + encBase64);
+        System.out.println("Decrypted text   : " + decText);
+    }
+}
